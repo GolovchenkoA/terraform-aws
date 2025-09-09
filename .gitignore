@@ -1,0 +1,52 @@
+# terraform.lock.hcl - should not be excluded from git
+
+# Terraform state files
+terraform.tfstate
+terraform.tfstate.backup
+**/.terraform/
+# Optional: crash logs, CLI logs
+**/crash.log
+
+# Java class files
+*.class
+
+.DS_Store/
+/target
+/target/
+**/target/
+
+.DS_Store
+
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
