@@ -10,6 +10,31 @@
 #   source = "modules/servers"
 # }
 
+################# NETWORK ######################################
+# TODO: use different VPC and subnets for different environments
+resource "aws_vpc" "main-vpc" {
+  cidr_block           = var.vpc_cidr_block
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "main-vpc-${var.environment_name}"
+  }
+}
+
+
+resource "aws_subnet" "subnet1" {
+  vpc_id                  = aws_vpc.main-vpc.id
+  cidr_block              = var.vpc_subnet_cidr_block
+  # availability_zone       = "us-east-1a"   # Optional: choose a specific AZ
+  # map_public_ip_on_launch = true           # Optional: if launching public instances
+
+  tags = {
+    Name = "main-subnet-${var.environment_name}"
+  }
+}
+
+################# EC2 ######################################
 data "aws_ec2_instance_type" "ec2_instance" {
   instance_type = "t3.micro"
 }
@@ -30,6 +55,7 @@ resource "aws_instance" "ec2_instance_001" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = data.aws_ec2_instance_type.ec2_instance.instance_type
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  subnet_id = aws_subnet.subnet1.id
 
   tags = {
     Name = "ec2-sqs-${var.environment_name}"
@@ -46,6 +72,8 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
 
 # TODO: move to it's module
 data "aws_caller_identity" "current" {}
+
+################# SQS ######################################
 
 resource "aws_sqs_queue" "simple_sqs_001" {
   name = "standard-sqs-001-${var.environment_name}"
