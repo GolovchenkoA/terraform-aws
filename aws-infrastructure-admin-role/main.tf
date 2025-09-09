@@ -47,6 +47,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_iam_role" "infrastructure_admins" {
   name = "aws-infrastructure-admin-role"
 
+  # AWS Console Role "Trust relationships"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -68,7 +69,7 @@ resource "aws_iam_role" "infrastructure_admins" {
   }
 }
 
-# # Attach AdministratorAccess policy to the role
+# # Attach AdministratorAccess policy to the role (AWS Console Role "Permissions")
 resource "aws_iam_role_policy_attachment" "administrator_policy_attach" {
   role       = aws_iam_role.infrastructure_admins.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
