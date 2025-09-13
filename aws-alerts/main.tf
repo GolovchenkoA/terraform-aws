@@ -2,13 +2,19 @@ provider "aws" {
   region = "us-east-1" # Change to your region
 }
 
+locals {
+  email_notifications_enabled = var.notification_email != null && var.notification_email != "" ? 1 : 0
+}
+
 # 1. SNS Topic for Notifications
 resource "aws_sns_topic" "cpu_alerts" {
+  count = local.email_notifications_enabled
   name = "ec2-cpu-utilization-alerts"
 }
 
 # 2. SNS Email Subscription
 resource "aws_sns_topic_subscription" "email_sub" {
+  count = local.email_notifications_enabled
   topic_arn = aws_sns_topic.cpu_alerts.arn
   protocol  = "email"
   endpoint  = var.notification_email
@@ -17,6 +23,7 @@ resource "aws_sns_topic_subscription" "email_sub" {
 
 # 3. CloudWatch Alarm
 resource "aws_cloudwatch_metric_alarm" "ec2_cpu_alarm" {
+  count = local.email_notifications_enabled
   alarm_name          = "High-CPU-Utilization-EC2"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 3 #  The number of periods over which data is compared to the specified threshold
