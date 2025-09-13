@@ -1,5 +1,7 @@
 # terraform.lock.hcl - should not be excluded from git
 
+**/terraform.tfvars.secret
+
 # Terraform state files
 terraform.tfstate
 terraform.tfstate.backup
