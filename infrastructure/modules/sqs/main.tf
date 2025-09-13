@@ -71,3 +71,26 @@ resource "aws_iam_role_policy_attachment" "attach_sqs_policy_to_role" {
   role       = aws_iam_role.sqs_read_write_role.name
   policy_arn = aws_iam_policy.sqs_read_write_policy.arn
 }
+
+### Alarms
+
+resource "aws_cloudwatch_metric_alarm" "this" {
+  alarm_name          = "sqs-sent-messages-${aws_sqs_queue.simple_sqs_001.name}-${var.environment_name}"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "NumberOfMessagesSent"
+  namespace           = "AWS/SQS"
+  period              = 300 # 5 minutes
+  statistic           = "Sum"
+  threshold           = 100 # customize this based on your alerting needs
+  alarm_description   = "Alarm when more than 100 messages are sent to SQS in 5 minutes"
+  actions_enabled     = true
+
+  dimensions = {
+    QueueName = aws_sqs_queue.simple_sqs_001.name
+  }
+
+  # alarm_actions = [
+  #   "arn:aws:sns:us-east-1:123456789012:your-sns-topic" # replace with your SNS topic ARN
+  # ]
+}
