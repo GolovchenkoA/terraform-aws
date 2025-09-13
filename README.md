@@ -26,3 +26,14 @@ terraform plan
 ```shell
 terraform apply
 ```
+
+# The "infrastructure" project
+
+```shell
+cd ./infrastructure/
+```
+
+```shell
+terraform init
+terraform apply
+```

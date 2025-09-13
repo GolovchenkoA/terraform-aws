@@ -1,3 +1,29 @@
+data "aws_caller_identity" "current" {}
+
+######################## Public Networks ##################################
+data "aws_vpc" "default_vpc_us-east-01" {
+  id = "vpc-0405fb387d6c49dde"
+}
+
+# Get the default subnet in us-east-1a
+data "aws_subnets" "default_subnets_in_vpc" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default_vpc_us-east-01.id]
+  }
+
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
+}
+
+data "aws_subnet" "default_subnet" {
+  id = data.aws_subnets.default_subnets_in_vpc.ids[0]
+}
+#######################################################################
+
+
 module "network" {
   source = "./modules/networking"
   aws_region = var.aws_region
@@ -13,10 +39,12 @@ module "sqs" {
 }
 
 module "virtualization" {
+  aws_account_id = data.aws_caller_identity.current.account_id
   source = "./modules/virtualization"
   aws_region = var.aws_region
   environment_name = var.environment_name
-  subnet_id = module.network.subnet_id
+  vpc_id = data.aws_vpc.default_vpc_us-east-01.id
+  subnet_id = data.aws_subnet.default_subnet.id
   app_name = var.app_name
   ec2_instance_role_name = module.sqs.ec2_sqs_role_name
 }
