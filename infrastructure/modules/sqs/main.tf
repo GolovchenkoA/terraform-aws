@@ -48,7 +48,7 @@ resource "aws_iam_role" "sqs_read_write_role" {
 # TODO: SQS Access policy list is empty
 resource "aws_iam_policy" "sqs_read_write_policy" {
   name        = "SQSReadWritePolicy"
-  description = "Allow EC2 read/write access to a specific SQS queue"
+  description = "Allows read/write access to a specific SQS queue"
 
   policy = jsonencode({
     Version = "2012-10-17"

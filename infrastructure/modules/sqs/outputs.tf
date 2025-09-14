@@ -13,7 +13,7 @@ aws sqs receive-message --queue-url ${aws_sqs_queue.simple_sqs_001.url} --messag
 EOT
 }
 
-output "ec2_sqs_role_name" {
+output "sqs_read_write_access_role_name" {
   value = aws_iam_role.sqs_read_write_role.name
 }
 

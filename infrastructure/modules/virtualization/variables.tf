@@ -7,9 +7,9 @@ variable "app_name" {
   type        = string
 }
 
-variable "ec2_instance_role_name" {
+variable "sqs_read_write_access_role_name" {
   type        = string
-  description = "Role assigned to the EC2 instance(s)"
+  description = "Role with access to sqs"
 }
 variable "environment_name" {
   type        = string
@@ -45,14 +45,14 @@ variable "docker_container_port" {
 
 variable "task_cpu" {
   description = "CPU units for Fargate task"
-  type        = string
-  default     = "256"
+  type = number
+  default = 256  # virtual cpu. 1024 = 1 vCPU, 512 = 0,5 vCPU
 }
 
 variable "task_memory" {
   description = "Memory for Fargate task (MB)"
-  type        = string
-  default     = "512"
+  type = number
+  default = 512
 }
 
 ### SQS ###

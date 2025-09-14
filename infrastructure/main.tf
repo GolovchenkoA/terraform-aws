@@ -46,7 +46,7 @@ module "virtualization" {
   vpc_id = data.aws_vpc.default_vpc_us-east-01.id
   subnet_id = data.aws_subnet.default_subnet.id
   app_name = var.app_name
-  ec2_instance_role_name = module.sqs.ec2_sqs_role_name
+  sqs_read_write_access_role_name = module.sqs.sqs_read_write_access_role_name
   sqs_main_url = module.sqs.sqs_main_url
 }
 
