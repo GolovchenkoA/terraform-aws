@@ -33,6 +33,10 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
 
 ####################### ECS #######################
 
+locals {
+  ecs_cloud_watch_log_group_name = "/ecs/${var.app_name}"
+}
+
 # ECS Service (runs container permanently)
 resource "aws_ecs_service" "service" {
   name            = "ecs-service-${var.environment_name}"
@@ -154,8 +158,38 @@ resource "aws_ecs_task_definition" "task" {
           protocol      = "tcp"
         }
       ]
+      environment = [
+        {
+          name  = "SQS_URL"
+          value = var.sqs_main_url
+        },
+        {
+          name  = "SQS_URL2"
+          value = "${var.sqs_main_url}-2"
+        }
+      ]
+      #  See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specify-log-config.html
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.ecs_log_group.name
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "aws-ecs-logs-example"
+        }
+      }
     }
   ])
+
+  tags = {
+    Environment = var.environment_name
+  }
+}
+
+
+resource "aws_cloudwatch_log_group" "ecs_log_group" {
+  name              = local.ecs_cloud_watch_log_group_name
+  retention_in_days = 3 # optional
+  skip_destroy = true
 
   tags = {
     Environment = var.environment_name

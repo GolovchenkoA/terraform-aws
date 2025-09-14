@@ -16,3 +16,7 @@ EOT
 output "ec2_sqs_role_name" {
   value = aws_iam_role.sqs_read_write_role.name
 }
+
+output "sqs_main_url" {
+  value = aws_sqs_queue.simple_sqs_001.url
+}

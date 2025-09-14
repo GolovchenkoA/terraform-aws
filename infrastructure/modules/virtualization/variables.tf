@@ -54,3 +54,10 @@ variable "task_memory" {
   type        = string
   default     = "512"
 }
+
+### SQS ###
+
+variable "sqs_main_url" {
+  description = "SQS URL that's used by the app"
+  type = string
+}
